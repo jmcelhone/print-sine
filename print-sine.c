@@ -4,17 +4,22 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 
-int main(void) {
+int main(int argc, char *argv[]) {
 	struct winsize w;
 
-	const int height = 4;
-	const double step = 2.0 / height;
-	const double frequency = 0.1;
+	if (argc != 3) {
+		fprintf(stderr, "Usage: ./print-sine height frequency");
+		return 1;
+	}
 
 	if (ioctl(STDIN_FILENO, TIOCGWINSZ, &w)) {
 		perror("Error getting window size");
 		return 1;
 	}
+
+	const int height = atoi(argv[1]);
+	const double frequency = strtod(argv[2], NULL);
+	const double step = 2.0 / height;
 
 	const int width = w.ws_col;
 	double angle = 0;
