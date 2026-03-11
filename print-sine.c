@@ -9,11 +9,42 @@ int main(void) {
 	while (angle <= 2 * M_PI) {
 		angle_arr[i] = sin(angle);
 		angle += 0.1;
-		i++;
+		++i;
 	}
 	
-	for (int i = 0; i < 63; i++) {
-		printf("%.2lf\n", angle_arr[i]);
+	for (int i = 0; i < 63; ++i) {
+		if (angle_arr[i] >= 0.5) {
+			printf("*");
+		}
+		else {
+			printf(" ");
+		}
 	}
-}
-
+	printf("\n");
+	for (int i = 0; i < 63; ++i) {
+		if (angle_arr[i] >= 0 && angle_arr[i] < 0.5) {
+			printf("*");
+		}
+		else {
+			printf(" ");
+		}
+	}
+	printf("\n");
+	for (int i = 0; i < 63; ++i) {
+		if (angle_arr[i] >= -0.5 && angle_arr[i] < 0) {
+			printf("*");
+		}
+		else {
+			printf(" ");
+		}
+	}
+	printf("\n");
+	for (int i = 0; i < 63; ++i) {
+		if (angle_arr[i] < -0.5) {
+			printf("*");
+		}
+		else {
+			printf(" ");
+		}
+	}
+	printf("\n"); }
