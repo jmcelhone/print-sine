@@ -1,50 +1,40 @@
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
 
 int main(void) {
-	double angle = 0;
-	double angle_arr[63] = {0}; 
+	struct winsize w;
 
-	int i = 0;
-	while (angle <= 2 * M_PI) {
+	const int height = 4;
+	const double step = 2.0 / height;
+	const double frequency = 0.1;
+
+	if (ioctl(STDIN_FILENO, TIOCGWINSZ, &w)) {
+		perror("Error getting window size");
+		return 1;
+	}
+
+	const int width = w.ws_col;
+	double angle = 0;
+	double *angle_arr = (double *)malloc(width * sizeof(double)); 
+
+	for (int i = 0; i < width; i++) {
 		angle_arr[i] = sin(angle);
-		angle += 0.1;
-		++i;
+		angle += frequency;
 	}
 	
-	for (int i = 0; i < 63; ++i) {
-		if (angle_arr[i] >= 0.5) {
-			printf("*");
+	for (int i = 0; i < height; ++i) {
+		for (int j = 0; j < width; ++j) {
+			if (angle_arr[j] >= -1.0 + i * step && angle_arr[j] < -1 + (i + 1) * step) {
+				printf("*");
+			} else {
+				printf(" ");
+			}
 		}
-		else {
-			printf(" ");
-		}
+		printf("\n");
 	}
-	printf("\n");
-	for (int i = 0; i < 63; ++i) {
-		if (angle_arr[i] >= 0 && angle_arr[i] < 0.5) {
-			printf("*");
-		}
-		else {
-			printf(" ");
-		}
-	}
-	printf("\n");
-	for (int i = 0; i < 63; ++i) {
-		if (angle_arr[i] >= -0.5 && angle_arr[i] < 0) {
-			printf("*");
-		}
-		else {
-			printf(" ");
-		}
-	}
-	printf("\n");
-	for (int i = 0; i < 63; ++i) {
-		if (angle_arr[i] < -0.5) {
-			printf("*");
-		}
-		else {
-			printf(" ");
-		}
-	}
-	printf("\n"); }
+	
+	free(angle_arr);
+}
