@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gcc -o print-sine print-sine.c -lm
+gcc -Wall -Wextra -o  print-sine print-sine.c -lm
