@@ -23,17 +23,21 @@ int main(int argc, char *argv[]) {
 
 	const int width = w.ws_col;
 	double angle = 0;
-	double *angle_arr = (double *)malloc(width * sizeof(double)); 
+	double *sine_arr = (double *)malloc(width * sizeof(double)); 
+	double *cos_arr = (double *)malloc(width * sizeof(double)); 
 
 	for (int i = 0; i < width; i++) {
-		angle_arr[i] = sin(angle);
+		sine_arr[i] = sin(angle);
+		cos_arr[i] = cos(angle);
 		angle += frequency;
 	}
 	
 	for (int i = 0; i < height; ++i) {
 		for (int j = 0; j < width; ++j) {
-			if (angle_arr[j] >= -1.0 + i * step && angle_arr[j] < -1 + (i + 1) * step) {
+			if (sine_arr[j] >= -1.0 + i * step && sine_arr[j] < -1 + (i + 1) * step) {
 				printf("*");
+			} else if (cos_arr[j] >= -1.0 + i * step && cos_arr[j] < -1 + (i + 1) * step) {
+				printf("+");
 			} else {
 				printf(" ");
 			}
@@ -41,5 +45,5 @@ int main(int argc, char *argv[]) {
 		printf("\n");
 	}
 	
-	free(angle_arr);
+	free(sine_arr);
 }
