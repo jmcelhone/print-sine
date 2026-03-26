@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
+#include <time.h>
 
 int main(int argc, char *argv[]) {
 	struct winsize w;
@@ -13,7 +14,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (ioctl(STDIN_FILENO, TIOCGWINSZ, &w)) {
-		perror("Error getting window size");
+		perror("Error getting window width");
 		return 1;
 	}
 
@@ -24,25 +25,38 @@ int main(int argc, char *argv[]) {
 	const int width = w.ws_col;
 	double angle = 0;
 	double *sine_arr = (double *)malloc(width * sizeof(double)); 
-	double *cos_arr = (double *)malloc(width * sizeof(double)); 
+	int head = 0;
 
+	// Initalize angle values
 	for (int i = 0; i < width; i++) {
 		sine_arr[i] = sin(angle);
-		cos_arr[i] = cos(angle);
 		angle += frequency;
 	}
+
+	// Timer stuff
+	struct timespec interval = {0, 30000000};
 	
-	for (int i = 0; i < height; ++i) {
-		for (int j = 0; j < width; ++j) {
-			if (sine_arr[j] >= -1.0 + i * step && sine_arr[j] < -1 + (i + 1) * step) {
-				printf("*");
-			} else if (cos_arr[j] >= -1.0 + i * step && cos_arr[j] < -1 + (i + 1) * step) {
-				printf("+");
-			} else {
-				printf(" ");
+	while (1) {
+		// Clear screen
+		nanosleep(&interval, &interval);
+		printf("\e[1;1H\e[2J");
+
+		// Draw loop
+		for (int i = 0; i < height; ++i) {
+			for (int j = 0; j < width; ++j) {
+				if (sine_arr[(head + j) % width] >= -1.0 + i * step && sine_arr[(head + j) % width] < -1 + (i + 1) * step) {
+					printf("*");
+				} else {
+					printf(" ");
+				}
 			}
+			printf("\n");
 		}
-		printf("\n");
+
+		// Process loop
+		angle += frequency;
+		sine_arr[head] = sin(angle);
+		head = (head + 1) % width;
 	}
 	
 	free(sine_arr);
