@@ -3,7 +3,7 @@
 
 ## To build/run:
 1. Compile with ./compileall.sh
-2. Run with ./print-sine <height> <frequency>
+2. Run with ./print-sine (height) (frequency)
 3. Enjoy the waves ;D
 
 ## Demo:
